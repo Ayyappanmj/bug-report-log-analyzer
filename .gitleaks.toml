@@ -1,0 +1,12 @@
+title = "Bug Report & Log Analyzer gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Synthetic fake secrets used by the redaction tests and the demo"
+paths = [
+  '''^tests/''',
+  '''^demo/''',
+  '''^docs/''',
+]

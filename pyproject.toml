@@ -1,0 +1,4 @@
+[tool.bandit]
+exclude_dirs = ["tests", "scripts", ".venv", "benchmarks"]
+# B101 assert is fine outside tests; B404/B603 only appear in scripts (excluded). Intentional: sha-free, no shell, no pickle.
+skips = ["B101"]

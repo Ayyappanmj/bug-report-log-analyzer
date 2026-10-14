@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.git
+.github
+.venv
+venv
+__pycache__
+*.pyc
+*.db
+*.zip
+storage/*.db
+benchmarks/results
+benchmarks/scenarios_out
+.pytest_cache
+.coverage
+tests
