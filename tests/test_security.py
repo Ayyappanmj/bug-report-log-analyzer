@@ -206,7 +206,7 @@ def test_repository_contains_no_secrets():
     hits = []
     for p in ROOT.rglob("*"):
         rel = p.relative_to(ROOT)
-        if (not p.is_file() or rel.parts[0] in ("tests", "docs", ".git", "benchmarks") or p.suffix in (".zip", ".db", ".pyc")
+        if (not p.is_file() or rel.parts[0] in ("tests", "docs", ".git", "benchmarks", ".venv", "venv") or p.suffix in (".zip", ".db", ".pyc")
                 or "__pycache__" in rel.parts):
             continue
         try:
@@ -419,7 +419,7 @@ FORBIDDEN_IMPORTS = {"pickle", "marshal", "shelve", "subprocess", "ctypes"}
 def app_sources():
     for p in ROOT.rglob("*.py"):
         rel = p.relative_to(ROOT)
-        if rel.parts[0] in ("tests", "scripts", ".venv", "benchmarks") and not (rel.parts[0] == "benchmarks" and rel.name == "machine.py"):
+        if rel.parts[0] in ("tests", "scripts", ".venv", "venv", "benchmarks") and not (rel.parts[0] == "benchmarks" and rel.name == "machine.py"):
             continue
         yield rel, ast.parse(p.read_text(encoding="utf-8"))
 
@@ -440,7 +440,7 @@ def test_application_code_has_no_dynamic_execution_or_unsafe_deserialization():
             if isinstance(node, (ast.Import, ast.ImportFrom)):
                 names = [a.name.split(".")[0] for a in node.names] if isinstance(node, ast.Import) else [(node.module or "").split(".")[0]]
                 for n in names:
-                    if n in FORBIDDEN_IMPORTS and not (n == "ctypes" and str(rel) == "benchmarks/machine.py"):
+                    if n in FORBIDDEN_IMPORTS and not (n == "ctypes" and rel.as_posix() == "benchmarks/machine.py"):
                         problems.append(f"{rel}:{node.lineno} import {n}")
     assert not problems, problems
 
@@ -449,10 +449,10 @@ def test_network_calls_go_through_the_no_redirect_opener():
     users = []
     for p in ROOT.rglob("*.py"):
         rel = p.relative_to(ROOT)
-        if rel.parts[0] in ("tests", ".venv"):
+        if rel.parts[0] in ("tests", ".venv", "venv"):
             continue
         text = p.read_text(encoding="utf-8")
-        if re.search(r"\burlopen\(", text) and str(rel) != "ai/http.py":
+        if re.search(r"\burlopen\(", text) and rel.as_posix() != "ai/http.py":
             users.append(str(rel))
     assert not users, users
 

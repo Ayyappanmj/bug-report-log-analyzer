@@ -56,13 +56,19 @@ def _block_end(cleaned: list[str], start: int, max_span: int = 3000) -> int:
     """1-based end line of the brace block that starts at 0-based index `start`."""
     depth, started = 0, False
     for j in range(start, min(len(cleaned), start + max_span)):
-        for ch in cleaned[j]:
-            if ch == "{":
-                depth, started = depth + 1, True
-            elif ch == "}":
-                depth -= 1
-        if started and depth <= 0:
-            return j + 1
+        line = cleaned[j]
+        if "{" in line or "}" in line:
+            if "}" not in line:
+                depth += line.count("{")
+                started = True
+            else:
+                for ch in line:
+                    if ch == "{":
+                        depth, started = depth + 1, True
+                    elif ch == "}":
+                        depth -= 1
+            if started and depth <= 0:
+                return j + 1
         if not started and j - start >= 4:
             return start + 1
     return min(len(cleaned), start + max_span)

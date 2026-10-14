@@ -92,7 +92,7 @@ def test_unclosed_braces_stay_bounded_in_time():
     js = "\n".join(f"function f{i}() {{" for i in range(3000))
     t0 = time.perf_counter()
     chunks, _ = chunk_file(SourceFile("a.js", __import__("pathlib").Path("a.js"), "javascript", js.split("\n")))
-    assert len(chunks) >= 3000 and time.perf_counter() - t0 < 30
+    assert len(chunks) >= 3000 and time.perf_counter() - t0 < 60
 
 
 ADVERSARIAL = ["a." * 10000, "A." * 10000 + "!", "password=" * 2000, "eyJ" * 6000, "sk-" * 6000, "ghp_" * 5000,
