@@ -70,7 +70,11 @@ class HistoryDB:
         cols = ("id", "created_at", "log_name", "total_events", "error_groups", "critical_errors", "recurring_errors",
                 "files_analyzed", "seconds", "ai_provider")
         with closing(self._connect()) as con:
-            rows = con.execute(f"SELECT {', '.join(cols)} FROM runs ORDER BY id DESC LIMIT ?", (int(limit),)).fetchall()
+            rows = con.execute(
+                "SELECT id, created_at, log_name, total_events, error_groups, critical_errors, recurring_errors, "
+                "files_analyzed, seconds, ai_provider FROM runs ORDER BY id DESC LIMIT ?",
+                (int(limit),),
+            ).fetchall()
         return [dict(zip(cols, r)) for r in rows]
 
     def load(self, run_id: int) -> dict | None:
